@@ -109,7 +109,7 @@ class FlagGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				FlagViewer.toggleFollowPlayer();
 				final Color c = btnFollowPlayer.getBackground();
-				btnFollowPlayer.setBackground(c.equals(Color.cyan) ? DEFAULT_BACKGROUND : Color.red);
+				btnFollowPlayer.setBackground(c.equals(Color.red) ? DEFAULT_BACKGROUND : Color.red);
 			}
 		});
 		contentPane.add(btnFollowPlayer, gbc_btnFollowPlayer);
