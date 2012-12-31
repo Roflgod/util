@@ -1,17 +1,21 @@
 package util.pathgenerator;
 
-import org.powerbot.game.api.methods.Environment;
-import org.powerbot.game.api.methods.interactive.Players;
-import org.powerbot.game.bot.Context;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import org.powerbot.game.api.methods.interactive.Players;
+import org.powerbot.game.bot.Context;
 
 class GUI extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -20,7 +24,6 @@ class GUI extends JFrame {
 	private JButton btnSetEnd;
 	private JButton btnGenPath;
 	private JButton btnSavePath;
-	private JButton btnOpenFolder;
 
 	GUI() {
 		setResizable(false);
@@ -38,9 +41,9 @@ class GUI extends JFrame {
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 0};
-		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 
 		btnSetEnd = new JButton("Set end tile");
@@ -88,27 +91,10 @@ class GUI extends JFrame {
 			}
 		});
 		GridBagConstraints gbc_btnSavePath = new GridBagConstraints();
-		gbc_btnSavePath.insets = new Insets(0, 0, 5, 0);
 		gbc_btnSavePath.fill = GridBagConstraints.BOTH;
 		gbc_btnSavePath.gridx = 0;
 		gbc_btnSavePath.gridy = 2;
 		contentPane.add(btnSavePath, gbc_btnSavePath);
-
-		btnOpenFolder = new JButton("Open folder");
-		btnOpenFolder.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					Runtime.getRuntime().exec("explorer.exe " + Environment.getStorageDirectory());
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		GridBagConstraints gbc_btnOpenFolder = new GridBagConstraints();
-		gbc_btnOpenFolder.fill = GridBagConstraints.BOTH;
-		gbc_btnOpenFolder.gridx = 0;
-		gbc_btnOpenFolder.gridy = 3;
-		contentPane.add(btnOpenFolder, gbc_btnOpenFolder);
 	}
 
 }

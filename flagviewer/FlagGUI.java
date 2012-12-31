@@ -56,7 +56,7 @@ class FlagGUI extends JFrame {
 
 		setResizable(false);
 		setTitle("Flag Viewer");
-		setBounds(100, 100, 770, 611);
+		setBounds(100, 100, 770, 594);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
