@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import org.powerbot.core.event.listeners.PaintListener;
 import org.powerbot.core.script.ActiveScript;
@@ -18,12 +19,26 @@ import org.powerbot.game.api.wrappers.Tile;
 import org.powerbot.game.api.wrappers.node.SceneObject;
 
 import scripts.roflgod.framework.Script;
+import scripts.roflgod.pathfinding.wrappers.Node;
 
 @Manifest(name = "Flag Viewer", authors = "Roflgod", version = 0.01)
 public class FlagViewer extends ActiveScript implements PaintListener, MouseListener {
+	private static Tile tile;
+	private static Node node;
 
-	private Tile selected;
-	private Node selectedNode;
+	private static ArrayList<Tile> surrounding = new ArrayList<Tile>();
+	private static int area = 0;
+
+	private static boolean follow;
+
+	static void modifyArea(final int amt) {
+		if (area >= 0)
+			area += amt;
+	}
+
+	static void toggleFollowPlayer() {
+		follow = !follow;
+	}
 
 	@Override
 	public void onStart() {
@@ -38,38 +53,73 @@ public class FlagViewer extends ActiveScript implements PaintListener, MouseList
 
 	@Override
 	public int loop() {
-		return 1000;
+		final Tile player = Players.getLocal().getLocation();
+		if (follow && (tile == null || !tile.equals(player))) {
+			tile = player;
+			node = Node.fromTile(tile);
+			final int[][] flags = Walking.getCollisionFlags(tile.getPlane());
+
+			getSurrounding();
+			updateMasks(node.getFlag(flags));
+			FlagGUI.get().updateData(node.getFlag(flags));
+		}
+		return 50;
 	}
 
-	@Override public void onRepaint(Graphics g1) {
+	@Override
+	public void onRepaint(Graphics g1) {
 		Graphics2D g = (Graphics2D) g1;
 		drawObject(g);
+		drawSurrounding(g);
 	}
 
-	public void drawObject(Graphics2D g) {
+	private void drawSurrounding(Graphics2D g) {
 		final FontMetrics fm = g.getFontMetrics();
-
-		if (selected != null) {
-			g.setColor(Color.white);
-			selected.draw(g);
-
-			g.setColor(Color.blue);
-			final SceneObject o = SceneEntities.getAt(selected);
-			if (o != null) {
-				o.getModel().draw(g);
+		final int[][] flags = Walking.getCollisionFlags(0);
+		for (final Tile t : surrounding) {
+			final Node n = Node.fromTile(t);
+			if (n.isBlocked(flags)) {
+				g.setColor(Color.red);
+			} else {
+				g.setColor(Color.white);
 			}
+			t.draw(g);
+			final Point p = t.getPoint(0.5d, 0.5d, 0);
+			if (n.getFlag(flags) != 0) {
+				final String flag = n.getFlag(flags) + "";
+				g.drawString(flag, (int) (p.x - (fm.stringWidth(flag) / 2.0)), p.y);
+			}
+		}
+	}
 
+	@SuppressWarnings("unused")
+	private void drawFlags(Graphics2D g) {
+		if (tile != null) {
+			final FontMetrics fm = g.getFontMetrics();
 			g.setColor(Color.white);
-			final int[][] flags = Walking.getCollisionFlags(selected.getPlane());
-			final int flag = selectedNode.getFlag(flags);
-			final Point p = selected.getPoint(0.5d, 0.5d, 0);
+			final int[][] flags = Walking.getCollisionFlags(tile.getPlane());
+			final int flag = node.getFlag(flags);
+			final Point p = tile.getPoint(0.5d, 0.5d, 0);
 			final String s = Integer.toString(flag);
 			g.drawString(s, (int) (p.x - (fm.stringWidth(s) / 2.0)), p.y);
 		}
 	}
 
+	private void drawObject(Graphics2D g) {
+		if (tile != null) {
+			g.setColor(Color.white);
+			tile.draw(g);
+
+			g.setColor(Color.blue);
+			final SceneObject o = SceneEntities.getAt(tile);
+			if (o != null) {
+				o.getModel().draw(g);
+			}
+		}
+	}
+
 	private void updateMasks(int flag) {
-		if (selected != null) {
+		if (tile != null) {
 			long bin = 0b1;
 			for (int i = 0; i <= 31; i++) {
 				Fields.DATA[i][3] = Long.toHexString(flag & bin);
@@ -81,23 +131,33 @@ public class FlagViewer extends ActiveScript implements PaintListener, MouseList
 		}
 	}
 
+	static void getSurrounding() {
+		surrounding.clear();
+		for (int x = -area; x <= area; x++) {
+			for (int y = -area; y <= area; y++) {
+				surrounding.add(tile.derive(x, y));
+			}
+		}
+	}
+
 	@Override public void mouseClicked(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON1) {
+		if (!follow && e.getButton() == MouseEvent.BUTTON1) {
 			for (int i = -20; i <= 20; i++) {
 				for (int i2 = -20; i2 <= 20; i2++) {
-					final Tile tile = Players.getLocal().getLocation().derive(i, i2);
-					if (tile.contains(e.getPoint())) {
-						if (!tile.equals(selected)) {
-							this.selected = tile;
-							this.selectedNode = Node.fromTile(tile);
-							final int[][] flags = Walking.getCollisionFlags(selected.getPlane());
-							final int flag = selectedNode.getFlag(flags);
+					final Tile t = Players.getLocal().getLocation().derive(i, i2);
+					if (t.contains(e.getPoint())) {
+						if (!t.equals(tile)) {
+							tile = t;
+							node = Node.fromTile(t);
+							final int[][] flags = Walking.getCollisionFlags(tile.getPlane());
+							final int flag = node.getFlag(flags);
 							FlagGUI.get().updateData(flag);
 							updateMasks(flag);
 						}
 					}
 				}
 			}
+			getSurrounding();
 		}
 	}
 

@@ -8,7 +8,7 @@ import org.powerbot.game.api.wrappers.RegionOffset;
 import org.powerbot.game.api.wrappers.Tile;
 
 /**
- * Copied from Jump Point Search implementation with unneeded parts removed.
+ * Adapted from my Jump Point Search implementation with unneeded parts removed.
  *
  * @author Roflgod
  */

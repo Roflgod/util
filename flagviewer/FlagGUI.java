@@ -17,6 +17,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import scripts.roflgod.framework.Script;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 class FlagGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -32,6 +35,9 @@ class FlagGUI extends JFrame {
 	private final JLabel lblFlagValue = new JLabel("");
 	private final JScrollPane scrollPane = new JScrollPane();
 	private final JTable table = new JTable();
+	private final JButton btnExpand = new JButton("Expand");
+	private final JButton btnContract = new JButton("Contract");
+	private final JButton btnFollowPlayer = new JButton("Follow player");
 
 	void updateData(int flag) {
 		EventQueue.invokeLater(new Updater(flag));
@@ -61,9 +67,9 @@ class FlagGUI extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 0, 0};
+		gbl_contentPane.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 
@@ -76,14 +82,48 @@ class FlagGUI extends JFrame {
 
 		GridBagConstraints gbc_lblFlagValue = new GridBagConstraints();
 		gbc_lblFlagValue.anchor = GridBagConstraints.WEST;
-		gbc_lblFlagValue.insets = new Insets(0, 0, 5, 0);
+		gbc_lblFlagValue.insets = new Insets(0, 0, 5, 5);
 		gbc_lblFlagValue.gridx = 1;
 		gbc_lblFlagValue.gridy = 0;
 		contentPane.add(lblFlagValue, gbc_lblFlagValue);
 
+		GridBagConstraints gbc_btnExpand = new GridBagConstraints();
+		gbc_btnExpand.insets = new Insets(0, 0, 5, 5);
+		gbc_btnExpand.gridx = 3;
+		gbc_btnExpand.gridy = 0;
+		btnExpand.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FlagViewer.modifyArea(1);
+				FlagViewer.getSurrounding();
+			}
+		});
+
+		GridBagConstraints gbc_btnFollowPlayer = new GridBagConstraints();
+		gbc_btnFollowPlayer.insets = new Insets(0, 0, 5, 5);
+		gbc_btnFollowPlayer.gridx = 2;
+		gbc_btnFollowPlayer.gridy = 0;
+		btnFollowPlayer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FlagViewer.toggleFollowPlayer();
+			}
+		});
+		contentPane.add(btnFollowPlayer, gbc_btnFollowPlayer);
+		contentPane.add(btnExpand, gbc_btnExpand);
+
+		GridBagConstraints gbc_btnContract = new GridBagConstraints();
+		gbc_btnContract.insets = new Insets(0, 0, 5, 0);
+		gbc_btnContract.gridx = 4;
+		gbc_btnContract.gridy = 0;
+		btnContract.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FlagViewer.modifyArea(-1);
+				FlagViewer.getSurrounding();
+			}
+		});
+		contentPane.add(btnContract, gbc_btnContract);
+
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridwidth = 2;
-		gbc_scrollPane.insets = new Insets(0, 0, 0, 5);
+		gbc_scrollPane.gridwidth = 5;
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 1;
