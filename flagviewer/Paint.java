@@ -14,8 +14,6 @@ import org.powerbot.game.api.methods.node.SceneEntities;
 import org.powerbot.game.api.wrappers.Tile;
 import org.powerbot.game.api.wrappers.node.SceneObject;
 
-import scripts.roflgod.pathfinding.wrappers.Node;
-
 class Paint {
 	static void drawSurrounding(Graphics2D g) {
 		final FontMetrics fm = g.getFontMetrics();

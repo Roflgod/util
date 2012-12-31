@@ -14,9 +14,6 @@ import org.powerbot.game.api.methods.Walking;
 import org.powerbot.game.api.methods.interactive.Players;
 import org.powerbot.game.api.wrappers.Tile;
 
-import scripts.roflgod.framework.Script;
-import scripts.roflgod.pathfinding.wrappers.Node;
-
 @Manifest(name = "Flag Viewer", authors = "Roflgod", version = 0.01)
 public class FlagViewer extends ActiveScript implements PaintListener, MouseListener {
 	static Tile tile;

@@ -6,6 +6,7 @@ import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.methods.Walking;
 import org.powerbot.game.api.wrappers.RegionOffset;
 import org.powerbot.game.api.wrappers.Tile;
+import org.powerbot.game.api.wrappers.Tile.Flag;
 
 /**
  * Adapted from my Jump Point Search implementation with unneeded parts removed.
@@ -35,6 +36,13 @@ class Node {
 
 	public int getFlag(final int[][] flags) {
 		return flags[x][y];
+	}
+
+	public boolean isBlocked(final int[][] flags) {
+		final int flag = getFlag(flags);
+		final int OBJECT_MASK = Flag.OBJECT_BLOCK | Flag.OBJECT_TILE;
+		return ((flag & Flag.BLOCKED) != 0 && (flag & OBJECT_MASK) != 0)
+				|| (flag & Flag.DECORATION_BLOCK) != 0;
 	}
 
 	/**
