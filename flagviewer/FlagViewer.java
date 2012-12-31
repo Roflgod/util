@@ -54,13 +54,7 @@ public class FlagViewer extends ActiveScript implements PaintListener, MouseList
 			return 500;
 		final Tile player = Players.getLocal().getLocation();
 		if (follow && (tile == null || !tile.equals(player))) {
-			tile = player;
-			node = Node.fromTile(tile);
-			final int[][] flags = Walking.getCollisionFlags(tile.getPlane());
-
-			getSurrounding();
-			updateMasks(node.getFlag(flags));
-			FlagGUI.get().updateData(node.getFlag(flags));
+			updateTile(player);
 		}
 		return 50;
 	}
@@ -70,6 +64,16 @@ public class FlagViewer extends ActiveScript implements PaintListener, MouseList
 		Graphics2D g = (Graphics2D) g1;
 		Paint.drawObject(g);
 		Paint.drawSurrounding(g);
+	}
+
+	private static void updateTile(final Tile newTile) {
+		tile = newTile;
+		node = Node.fromTile(tile);
+		final int[][] flags = Walking.getCollisionFlags(tile.getPlane());
+		final int flag = node.getFlag(flags);
+		FlagGUI.get().updateData(flag);
+		updateMasks(flag);
+		getSurrounding();
 	}
 
 	static void updateMasks(int flag) {
@@ -103,17 +107,11 @@ public class FlagViewer extends ActiveScript implements PaintListener, MouseList
 					final Tile t = Players.getLocal().getLocation().derive(i, i2);
 					if (t.contains(e.getPoint())) {
 						if (!t.equals(tile)) {
-							tile = t;
-							node = Node.fromTile(t);
-							final int[][] flags = Walking.getCollisionFlags(tile.getPlane());
-							final int flag = node.getFlag(flags);
-							FlagGUI.get().updateData(flag);
-							updateMasks(flag);
+							updateTile(t);
 						}
 					}
 				}
 			}
-			getSurrounding();
 		}
 	}
 
