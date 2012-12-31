@@ -20,6 +20,7 @@ import scripts.roflgod.framework.Script;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 class FlagGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -29,6 +30,8 @@ class FlagGUI extends JFrame {
 	public static FlagGUI get() {
 		return INSTANCE;
 	}
+
+	private static Color DEFAULT_BACKGROUND = new Color(245, 245, 245);
 
 	private JPanel contentPane;
 	private final JLabel lblFlag = new JLabel("Flag:");
@@ -105,6 +108,8 @@ class FlagGUI extends JFrame {
 		btnFollowPlayer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FlagViewer.toggleFollowPlayer();
+				final Color c = btnFollowPlayer.getBackground();
+				btnFollowPlayer.setBackground(c.equals(Color.cyan) ? DEFAULT_BACKGROUND : Color.red);
 			}
 		});
 		contentPane.add(btnFollowPlayer, gbc_btnFollowPlayer);

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import org.powerbot.core.event.listeners.PaintListener;
 import org.powerbot.core.script.ActiveScript;
 import org.powerbot.game.api.Manifest;
+import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.methods.Walking;
 import org.powerbot.game.api.methods.interactive.Players;
 import org.powerbot.game.api.methods.node.SceneEntities;
@@ -53,6 +54,9 @@ public class FlagViewer extends ActiveScript implements PaintListener, MouseList
 
 	@Override
 	public int loop() {
+		if (Game.getClientState() != Game.INDEX_MAP_LOADED
+				|| Players.getLocal() == null)
+			return 500;
 		final Tile player = Players.getLocal().getLocation();
 		if (follow && (tile == null || !tile.equals(player))) {
 			tile = player;
@@ -132,10 +136,12 @@ public class FlagViewer extends ActiveScript implements PaintListener, MouseList
 	}
 
 	static void getSurrounding() {
-		surrounding.clear();
-		for (int x = -area; x <= area; x++) {
-			for (int y = -area; y <= area; y++) {
-				surrounding.add(tile.derive(x, y));
+		if (tile != null) {
+			surrounding.clear();
+			for (int x = -area; x <= area; x++) {
+				for (int y = -area; y <= area; y++) {
+					surrounding.add(tile.derive(x, y));
+				}
 			}
 		}
 	}
