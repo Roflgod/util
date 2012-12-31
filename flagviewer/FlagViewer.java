@@ -1,10 +1,7 @@
 package util.flagviewer;
 
-import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -15,22 +12,20 @@ import org.powerbot.game.api.Manifest;
 import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.methods.Walking;
 import org.powerbot.game.api.methods.interactive.Players;
-import org.powerbot.game.api.methods.node.SceneEntities;
 import org.powerbot.game.api.wrappers.Tile;
-import org.powerbot.game.api.wrappers.node.SceneObject;
 
 import scripts.roflgod.framework.Script;
 import scripts.roflgod.pathfinding.wrappers.Node;
 
 @Manifest(name = "Flag Viewer", authors = "Roflgod", version = 0.01)
 public class FlagViewer extends ActiveScript implements PaintListener, MouseListener {
-	private static Tile tile;
-	private static Node node;
+	static Tile tile;
+	static Node node;
 
-	private static ArrayList<Tile> surrounding = new ArrayList<Tile>();
-	private static int area = 0;
+	static ArrayList<Tile> surrounding = new ArrayList<Tile>();
+	static int area = 0;
 
-	private static boolean follow;
+	static boolean follow;
 
 	static void modifyArea(final int amt) {
 		if (area >= 0)
@@ -73,56 +68,11 @@ public class FlagViewer extends ActiveScript implements PaintListener, MouseList
 	@Override
 	public void onRepaint(Graphics g1) {
 		Graphics2D g = (Graphics2D) g1;
-		drawObject(g);
-		drawSurrounding(g);
+		Paint.drawObject(g);
+		Paint.drawSurrounding(g);
 	}
 
-	private void drawSurrounding(Graphics2D g) {
-		final FontMetrics fm = g.getFontMetrics();
-		final int[][] flags = Walking.getCollisionFlags(0);
-		for (final Tile t : surrounding) {
-			final Node n = Node.fromTile(t);
-			if (n.isBlocked(flags)) {
-				g.setColor(Color.red);
-			} else {
-				g.setColor(Color.white);
-			}
-			t.draw(g);
-			final Point p = t.getPoint(0.5d, 0.5d, 0);
-			if (n.getFlag(flags) != 0) {
-				final String flag = n.getFlag(flags) + "";
-				g.drawString(flag, (int) (p.x - (fm.stringWidth(flag) / 2.0)), p.y);
-			}
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void drawFlags(Graphics2D g) {
-		if (tile != null) {
-			final FontMetrics fm = g.getFontMetrics();
-			g.setColor(Color.white);
-			final int[][] flags = Walking.getCollisionFlags(tile.getPlane());
-			final int flag = node.getFlag(flags);
-			final Point p = tile.getPoint(0.5d, 0.5d, 0);
-			final String s = Integer.toString(flag);
-			g.drawString(s, (int) (p.x - (fm.stringWidth(s) / 2.0)), p.y);
-		}
-	}
-
-	private void drawObject(Graphics2D g) {
-		if (tile != null) {
-			g.setColor(Color.white);
-			tile.draw(g);
-
-			g.setColor(Color.blue);
-			final SceneObject o = SceneEntities.getAt(tile);
-			if (o != null) {
-				o.getModel().draw(g);
-			}
-		}
-	}
-
-	private void updateMasks(int flag) {
+	static void updateMasks(int flag) {
 		if (tile != null) {
 			long bin = 0b1;
 			for (int i = 0; i <= 31; i++) {
