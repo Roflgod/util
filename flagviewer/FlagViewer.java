@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.powerbot.core.event.listeners.PaintListener;
 import org.powerbot.core.script.ActiveScript;
@@ -19,10 +21,12 @@ public class FlagViewer extends ActiveScript implements PaintListener, MouseList
 	static Tile tile;
 	static Node node;
 
-	static ArrayList<Tile> surrounding = new ArrayList<Tile>();
+	static List<Tile> surrounding = Collections.synchronizedList(new ArrayList<Tile>());
 	static int area = 0;
 
 	static boolean follow;
+
+	static Direction direction = Direction.NORTH;
 
 	static void modifyArea(final int amt) {
 		if (area >= 0)

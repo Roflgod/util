@@ -1,5 +1,7 @@
 package util.flagviewer;
 
+import static util.flagviewer.FlagViewer.direction;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
@@ -39,6 +41,7 @@ class FlagGUI extends JFrame {
 	private final JButton btnExpand = new JButton("Expand");
 	private final JButton btnContract = new JButton("Contract");
 	private final JButton btnFollowPlayer = new JButton("Follow player");
+	private final JButton btnDirection = new JButton("Direction");
 
 	void updateData(int flag) {
 		EventQueue.invokeLater(new Updater(flag));
@@ -68,9 +71,9 @@ class FlagGUI extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
+		gbl_contentPane.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 
@@ -90,7 +93,7 @@ class FlagGUI extends JFrame {
 
 		GridBagConstraints gbc_btnExpand = new GridBagConstraints();
 		gbc_btnExpand.insets = new Insets(0, 0, 5, 5);
-		gbc_btnExpand.gridx = 3;
+		gbc_btnExpand.gridx = 4;
 		gbc_btnExpand.gridy = 0;
 		btnExpand.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -101,7 +104,7 @@ class FlagGUI extends JFrame {
 
 		GridBagConstraints gbc_btnFollowPlayer = new GridBagConstraints();
 		gbc_btnFollowPlayer.insets = new Insets(0, 0, 5, 5);
-		gbc_btnFollowPlayer.gridx = 2;
+		gbc_btnFollowPlayer.gridx = 3;
 		gbc_btnFollowPlayer.gridy = 0;
 		btnFollowPlayer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -110,12 +113,56 @@ class FlagGUI extends JFrame {
 				btnFollowPlayer.setBackground(c.equals(Color.red) ? DEFAULT_BACKGROUND : Color.red);
 			}
 		});
+
+		GridBagConstraints gbc_btnDirection = new GridBagConstraints();
+		gbc_btnDirection.insets = new Insets(0, 0, 5, 5);
+		gbc_btnDirection.gridx = 2;
+		gbc_btnDirection.gridy = 0;
+		btnDirection.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				switch (direction) {
+				case NORTH:
+					direction = Direction.NORTHEAST;
+					btnDirection.setText("Northeast");
+					break;
+				case NORTHEAST:
+					direction = Direction.EAST;
+					btnDirection.setText("East");
+					break;
+				case EAST:
+					direction = Direction.SOUTHEAST;
+					btnDirection.setText("Southeast");
+					break;
+				case SOUTHEAST:
+					direction = Direction.SOUTH;
+					btnDirection.setText("South");
+					break;
+				case SOUTH:
+					direction = Direction.SOUTHWEST;
+					btnDirection.setText("Southwest");
+					break;
+				case SOUTHWEST:
+					direction = Direction.WEST;
+					btnDirection.setText("West");
+					break;
+				case WEST:
+					direction = Direction.NORTHWEST;
+					btnDirection.setText("Northwest");
+					break;
+				case NORTHWEST:
+					direction = Direction.NORTH;
+					btnDirection.setText("North");
+					break;
+				}
+			}
+		});
+		contentPane.add(btnDirection, gbc_btnDirection);
 		contentPane.add(btnFollowPlayer, gbc_btnFollowPlayer);
 		contentPane.add(btnExpand, gbc_btnExpand);
 
 		GridBagConstraints gbc_btnContract = new GridBagConstraints();
 		gbc_btnContract.insets = new Insets(0, 0, 5, 0);
-		gbc_btnContract.gridx = 4;
+		gbc_btnContract.gridx = 5;
 		gbc_btnContract.gridy = 0;
 		btnContract.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -126,7 +173,7 @@ class FlagGUI extends JFrame {
 		contentPane.add(btnContract, gbc_btnContract);
 
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridwidth = 5;
+		gbc_scrollPane.gridwidth = 6;
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 1;

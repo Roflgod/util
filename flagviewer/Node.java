@@ -38,11 +38,87 @@ class Node {
 		return flags[x][y];
 	}
 
+	/**
+	 * Derives a neighbor from this <code>Node</code> and sets it as the parent.
+	 * This method creates a new <code>Node</code>.
+	 *
+	 * @param d
+	 *            The <code>Direction</code> of the neighbor
+	 * @return The derived <code>Node</code>
+	 */
+	public Node deriveNeighbor(final Direction d) {
+		return deriveNeighbor(d.getX(), d.getY());
+	}
+
+	/**
+	 * Derives a neighbor from this <code>Node</code> and sets it as the parent.
+	 * This method creates a new <code>Node</code>.
+	 *
+	 * @param dx
+	 *            Change in x
+	 * @param dy
+	 *            Change in y
+	 * @return The derived <code>Node</code>
+	 */
+	private Node deriveNeighbor(final int dx, final int dy) {
+		return new Node(x + dx, y + dy, plane);
+	}
+
+	public boolean isNotWalkable(final Direction d, final int[][] flags) {
+		if (isBlocked(flags)
+				|| x < 0 || x >= flags.length
+				|| y < 0 || y >= flags.length)
+			return true;
+
+		final Node parent = this.deriveNeighbor(d.getOpposite());
+		final int flag = this.getFlag(flags);
+
+		if (d.isDiagonal()) {
+			// [ ][|][ ]
+			// [-][+][-]
+			// [↗][|][ ]
+			// Possible walls when moving diagonally shown by +/-/|
+			for (final Direction component : d.getComponents()) {
+				// [ ][|][x]
+				// [ ][ ][-]      ↗ ==> ↑ → (components)
+				// [↗][ ][ ]
+				// Case 1: Component walls, (x) target
+				final int compOppFlag = component.getOppFlag();
+				if ((flag & compOppFlag) != 0)
+					return true;
+
+				// [ ][ ][x]
+				// [-][ ][ ]
+				// [↗][|][ ]
+				// Case 2: Component walls, (x) target
+				final int compFlag = component.getFlag();
+				if ((parent.getFlag(flags) & compFlag) != 0)
+					return true;
+
+				// [+][ ]
+				// [↗][+]
+				// Case 3: Blocked neighbors, (+) blocked
+				final Node derived = parent.deriveNeighbor(component);
+				if (derived.isBlocked(flags))
+					return true;
+			}
+
+			// [ ][ ][x]
+			// [ ][+][ ]
+			// [↗][ ][ ]
+			// Case 4: Diagonal component wall, (+) corner wall
+			int mask = d.getOppFlag();
+			return (flag & mask) != 0;
+		} else { // else is used for clarity; i.e. if d is cardinal.
+			return (flag & d.getOppFlag()) != 0;
+		}
+	}
+
 	public boolean isBlocked(final int[][] flags) {
 		final int flag = getFlag(flags);
 		final int OBJECT_MASK = Flag.OBJECT_BLOCK | Flag.OBJECT_TILE;
 		return ((flag & Flag.BLOCKED) != 0 && (flag & OBJECT_MASK) != 0)
-				|| (flag & Flag.DECORATION_BLOCK) != 0;
+				|| (flag & Flag.DECORATION_BLOCK) != 0 || (flag & 0x200000) != 0;
 	}
 
 	/**
