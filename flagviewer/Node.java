@@ -6,7 +6,6 @@ import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.methods.Walking;
 import org.powerbot.game.api.wrappers.RegionOffset;
 import org.powerbot.game.api.wrappers.Tile;
-import org.powerbot.game.api.wrappers.Tile.Flag;
 
 /**
  * Adapted from my Jump Point Search implementation with unneeded parts removed.
@@ -116,9 +115,7 @@ class Node {
 
 	public boolean isBlocked(final int[][] flags) {
 		final int flag = getFlag(flags);
-		final int OBJECT_MASK = Flag.OBJECT_BLOCK | Flag.OBJECT_TILE;
-		return ((flag & Flag.BLOCKED) != 0 && (flag & OBJECT_MASK) != 0)
-				|| (flag & Flag.DECORATION_BLOCK) != 0 || (flag & 0x200000) != 0;
+		return (flag & 0x260100) != 0;
 	}
 
 	/**
@@ -145,9 +142,19 @@ class Node {
 		return new Tile(x + collisionOff.getX() + Game.getBaseX(), y + collisionOff.getY() + Game.getBaseY(), plane);
 	}
 
+	//private static Color WHITE_TRANSPARENT = new Color(255, 255, 255, 100);
+
 	public void draw(final Graphics render) {
 		final Tile tile = toTile();
-		if (tile != null)
+		if (tile != null) {
+			/*
+			final Polygon[] polygons = tile.getBounds();
+			if (polygons.length == 1) {
+				render.setColor(WHITE_TRANSPARENT);
+				render.fillPolygon(polygons[0]);
+				//render.drawPolygon(polygons[0]);
+			}*/
 			tile.draw(render);
+		}
 	}
 }

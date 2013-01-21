@@ -1,6 +1,5 @@
 package util.flagviewer;
 
-import static util.flagviewer.FlagViewer.direction;
 import static util.flagviewer.FlagViewer.node;
 import static util.flagviewer.FlagViewer.surrounding;
 import static util.flagviewer.FlagViewer.tile;
@@ -21,18 +20,18 @@ class Paint {
 		final int[][] flags = Walking.getCollisionFlags(0);
 		for (final Tile t : surrounding) {
 			final Node n = Node.fromTile(t);
-			/*
 			if (n.isBlocked(flags)) {
 				g.setColor(Color.red);
 			} else {
 				g.setColor(Color.white);
-			}*/
+			}
+			/*
 			if (n.isNotWalkable(direction, flags)) {
 				g.setColor(Color.red);
 			} else {
 				g.setColor(Color.white);
-			}
-			t.draw(g);
+			}*/
+			n.draw(g);
 			final Point p = t.getPoint(0.5d, 0.5d, 0);
 			if (n.getFlag(flags) != 0) {
 				final String flag = n.getFlag(flags) + "";

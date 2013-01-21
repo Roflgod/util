@@ -1,15 +1,18 @@
 package util.pathgenerator;
 
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.Map;
+
 import org.powerbot.core.event.listeners.PaintListener;
 import org.powerbot.core.script.ActiveScript;
 import org.powerbot.game.api.Manifest;
 import org.powerbot.game.api.methods.Game;
 import org.powerbot.game.api.methods.interactive.Players;
 import org.powerbot.game.api.wrappers.Tile;
-import org.powerbot.game.api.wrappers.map.LocalPath;
-
-import java.awt.*;
-import java.util.Map;
 
 @Manifest(authors = { "Roflgod" }, name = "Path Generator", description = "", version = 0.1)
 public class PathGenerator extends ActiveScript implements PaintListener {
